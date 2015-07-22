@@ -33,11 +33,11 @@ public class countRectangles {
     private int origY;
 
     public countRectangles() {
-        List l = new ArrayList<String>();
+        l = new ArrayList<>();
         getInput(l);
         curX = 0;
         curY = 0;
-        w = l.get(0).toString().length();
+        w = l.get(0).length();
         h = l.size();
     }
 
@@ -62,7 +62,6 @@ public class countRectangles {
         //Read the scanner and put it into s
         while(inputFile.hasNext()) {
             s.add(inputFile.nextLine());
-            s.toString();
         }
     }
 
@@ -70,7 +69,11 @@ public class countRectangles {
      * @return the character the current cursor points to
      */
     protected char item() {
-        return (char) l.get(curX).charAt(curY);
+        // Checking if we have gone out of bounds
+        if(curX < 0 || curX >= w || curY < 0 || curY >= h) {
+            return ' ';
+        }
+        return l.get(curY).charAt(curX);
     }
 
     /**
@@ -84,7 +87,7 @@ public class countRectangles {
      * Moves the cursor one spot down
      */
     protected void moveDown() {
-        curY--;
+        curY++;
     }
 
     /**
@@ -98,7 +101,7 @@ public class countRectangles {
      * Moves the cursor one spot up
      */
     protected void moveUp() {
-        curY++;
+        curY--;
     }
 
     /**
@@ -118,9 +121,8 @@ public class countRectangles {
      */
     protected int count() {
         int result = 0;
-        System.out.println(l.toString());
         for(int i = 0; i < w; i++) {
-            for(int j = 0; i < h; j++) {
+            for(int j = 0; j < h; j++) {
                 if( l.get(j).charAt(i) == '+' ) {
                     origX = i;
                     origY = j;
@@ -142,7 +144,7 @@ public class countRectangles {
         int result = 0;
         int inc = 1;
 
-        while( item() != ' ' ) {
+        while( item() == '-' || item() == '+' ) {
             if( item() == '+' ) {
                 moveDown();
                 result += helperDown(x+inc, y);
@@ -159,10 +161,10 @@ public class countRectangles {
         int result = 0;
         int inc = 1;
 
-        while( item() != ' ' ) {
+        while( item() == '|' || item() == '+' ) {
             if( item() == '+' ) {
                 moveLeft();
-                result += helperDown(x, y-inc);
+                result += helperLeft(x, y+inc);
             }
             moveDown();
             inc++;
@@ -176,7 +178,7 @@ public class countRectangles {
         int result = 0;
         int inc = 1;
 
-        while( item() != ' ' ) {
+        while( item() == '-' || item() == '+' ) {
             if( item() == '+' ) {
                 moveUp();
                 result += helperUp(x - inc, y);
@@ -191,7 +193,7 @@ public class countRectangles {
 
     protected int helperUp(int x, int y) {
 
-        while( item() != ' ' ) {
+        while( item() == '|' || item() == '+' ) {
             if( (curX == origX) && (curY == origY) ) {
                 move(x, y);
                 return 1;
